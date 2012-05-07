@@ -15,6 +15,8 @@
   <inherits name='com.extjs.gxt.ui.GXT' />
   <inherits name='com.google.gwt.maps.GoogleMaps' />
   <inherits name="com.google.code.gwt.geolocation.Html5Geolocation" />
+  <inherits name='com.smartgwt.SmartGwt' />
+  <inherits name='com.smartclient.theme.silverwave.SilverWave' />
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.openforevent.events.client.Events'/>

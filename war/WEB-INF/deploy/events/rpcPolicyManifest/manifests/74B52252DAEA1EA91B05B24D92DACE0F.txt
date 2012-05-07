@@ -1,0 +1,2 @@
+serviceClass: com.openforevent.events.client.GwtRpcService
+path: CE668E964EEDA1F315F334A3A1CE58CD.gwt.rpc

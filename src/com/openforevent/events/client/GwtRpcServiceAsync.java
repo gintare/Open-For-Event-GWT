@@ -10,13 +10,16 @@ public interface GwtRpcServiceAsync {
 	void dummy1(HashMap<String, String> parameters,
 			AsyncCallback<String> callback);
 
-	void dummy2(HashMap<String, String> parameters,
-			AsyncCallback<HashMap<String, String>> callback);
+	void dummy2(HashMap<String, Object> parameters,
+			AsyncCallback<HashMap<String, Object>> callback);
 
 	void dummy3(HashMap<String, String> parameters,
 			AsyncCallback<ArrayList<HashMap<String, String>>> callback);
 
 	void dummy4(HashMap<String, String> parameters,
 			AsyncCallback<ArrayList<HashMap<String, Object>>> callback);
+
+	void processRequest(HashMap<String, String> parameters,
+			AsyncCallback<HashMap<String, Object>> callback);
 
 }

@@ -3,18 +3,11 @@ package com.openforevent.events.client;
 
 import java.util.HashMap;
 
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;  
 import com.google.code.gwt.geolocation.client.Coordinates;
 import com.google.code.gwt.geolocation.client.Geolocation;
 import com.google.code.gwt.geolocation.client.Position;
@@ -23,15 +16,11 @@ import com.google.code.gwt.geolocation.client.PositionError;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
-import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.event.MapMouseOverHandler;
 import com.google.gwt.maps.client.event.MarkerDragEndHandler;
-import com.google.gwt.maps.client.event.MarkerDragEndHandler.MarkerDragEndEvent;
 import com.google.gwt.maps.client.event.MarkerDragStartHandler;
-import com.google.gwt.maps.client.event.MarkerDragStartHandler.MarkerDragStartEvent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
@@ -41,6 +30,12 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Window;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -61,17 +56,17 @@ public class Events implements EntryPoint {
 	//		.create(GreetingService.class);
 	
 	// GWT module entry point method.
-	  public void onModuleLoad() {
+	  public void onModuleLoad() {          
 		  
 		  HashMap<String, String> parameters = new HashMap<String, String>();
 		  parameters.put("visitId", "1111");
 		  AsyncCallback<HashMap<String, Object>> callback = new AsyncCallback<HashMap<String, Object>>() {
 			   public void onFailure(Throwable caught) {
-				   MessageBox.info("Message", "server error " + caught.toString(), null);
+				   SC.say("server error " + caught.toString());
 			   }
 
 			   public void onSuccess(HashMap<String, Object> result) {
-				   MessageBox.info("Message", "server success ", null);
+				   MessageBox.info("Message", "server success, geoName = "+result, null);
 			   }
 			};
 			
@@ -90,14 +85,7 @@ public class Events implements EntryPoint {
 	    		    }
 	    		    public void onSuccess(Position position) {
 	    		        final Coordinates coords = position.getCoords();
-	    		        
-	    		        /*
-	    		 	    * Asynchronously loads the Maps API.
-	    		 	    *
-	    		 	    * The first parameter should be a valid Maps API Key to deploy this
-	    		 	    * application on a public server, but a blank key will work for an
-	    		 	    * application served from localhost.
-	    		 	   */
+
 	    		        Maps.loadMapsApi("", "2", false, new Runnable() {
 	    		  	      public void run() {
 	    		  	        buildUi(coords);
@@ -130,14 +118,30 @@ public class Events implements EntryPoint {
 	    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
 	    dock.addNorth(map, 400);
 	    
+	    /*Window window = new Window();  
+        window.setTitle("Dragging a window");  
+        window.setWidth(300);  
+        window.setHeight(230);  
+        window.setCanDragReposition(true);  
+        window.setCanDragResize(true);    
+          
+        Canvas canvasMain = new Canvas();  
+        canvasMain.addChild(window);  
+        canvasMain.draw();  */
+	    
 	    final Window w = new Window();  
-	    w.setPlain(true);  
+	    w.setWidth(520);  
+        w.setHeight(370);  
+        w.setCanDragReposition(true);  
+        w.setCanDragResize(true);
+	    /*w.setPlain(true);  
 	    w.setSize(520, 370);  
 	    w.setPosition(0, 0);	    
-	    w.setLayout(new FitLayout());
-	    //LayoutContainer layout = new LayoutContainer();
-	    //layout.setLayout(new FlowLayout(5));
-	    //layout.add(w);
+	    w.setLayout(new FitLayout());*/
+        final Canvas canvasMain = new Canvas();  
+        canvasMain.addChild(w);  
+        //canvasMain.setBackgroundColor("blue");
+	    
 	    FormPanel panel = new FormPanel();  
 	    panel.setBorders(false);  
 	    panel.setBodyBorder(false);  
@@ -172,15 +176,18 @@ public class Events implements EntryPoint {
 	    DockPanel dock1 = new DockPanel();
 	    dock1.add(panel, DockPanel.NORTH);
 	    dock1.add(map1, DockPanel.CENTER);			    
-	    w.add(dock1);
-	    
+	    //w.add(dock1);
+	    w.addItem(dock1);
 	    
 	    
 	    class MyHandler implements MapMouseOverHandler{
 
 			@Override
-			public void onMouseOver(MapMouseOverEvent event) {								
-			    w.show();
+			public void onMouseOver(MapMouseOverEvent event) {
+				SC.say("open");
+				//w.draw();
+			    //w.show();
+				canvasMain.draw();
 			}
 	    	
 	    }
